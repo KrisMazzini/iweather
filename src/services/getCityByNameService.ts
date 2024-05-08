@@ -1,36 +1,29 @@
-import { api } from "./api";
+import { geoAPI } from "./api";
 
 export type CityProps = {
-  id: string;
   name: string;
   longitude: number;
   latitude: number;
 }
 
 export type CityAPIResponse = {
-  id: string;
   name: string;
-  sys: {
-    country?: string;
-  },
-  coord: {
-    lon: number;
-    lat: number;
-  }
+  country?: string;
+  lat: number;
+  lon: number;
 }
 
 export async function getCityByNameService(name: string): Promise<CityProps[] | []> {
   try {
-    const { data } = await api.get<CityAPIResponse>(`/weather?q=${name}`);
+    const { data } = await geoAPI.get<CityAPIResponse[]>(`/direct?q=${name}`);
 
-    const city = {
-      id: data.id,
-      name: data.sys.country ? `${data.name}, ${data.sys.country}` : data.name,
-      longitude: data.coord.lon,
-      latitude: data.coord.lat,
-    };
+    const cities: CityProps[] = data.map(cityData => ({
+      name: cityData.country ? `${cityData.name}, ${cityData.country}` : cityData.name,
+      latitude: cityData.lat,
+      longitude: cityData.lon,
+    }));
 
-    return [city];
+    return cities;
   } catch (error) {
     return [];
   }

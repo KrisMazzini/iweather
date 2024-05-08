@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { api } from "./api";
+import { weatherAPI } from "./api";
 import { getNextDays } from "@utils/getNextDays";
 import { WeatherIconsKeysProps, weatherIcons } from "@utils/weatherIcons";
 
@@ -43,7 +43,7 @@ export type WeatherResponseProps = {
 }
 
 export async function getWeatherByCityService({ latitude, longitude }: SearchCityWeatherProps): Promise<WeatherResponseProps> {
-  const { data } = await api.get<WeatherAPIResponseProps>(`/forecast?lat=${latitude}&lon=${longitude}`);
+  const { data } = await weatherAPI.get<WeatherAPIResponseProps>(`/forecast?lat=${latitude}&lon=${longitude}`);
   const { main, weather, wind, pop } = data.list[0];
 
   const today = {
